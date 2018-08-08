@@ -62,27 +62,18 @@ int main() {
     deck.shuffleDeck();
     bool winner = false;
     
+    //Deal cards to players
     for(int i=0; i<4; ++i)
     {
         deck.dealCards(players[i],7);
     }
     
+    //Start the Game
     while(1)
     {
+        //Check for a winner
         win_check(winner,players);
         if(winner) break;
-        //        for(int i=0; i<4; ++i)
-        //        {
-        //            cout<<"Player "<<i<<"min_suit: "<<players[i].get_minsuit()<<"\n";
-        //            cout<<"Player "<<i<<"max_suit: "<<players[i].get_maxsuit()<<"\n";
-        //            cout<<"\n \n";
-        //        }
-        
-        for(int i=1; i<4; ++i)
-        {
-            cout<<"Player "<<i+1<<": ";
-            players[i].show_hand();
-        }
         
         int card_index;
         players[0].show_hand();
@@ -96,9 +87,13 @@ int main() {
         players[2].auto_pass(players[3]);
         players[3].auto_pass(players[0]);
         
-        int discard_index;
-        players[0].show_hand();
         
+        //Discarding Round----------------------------------------------------------------------------
+        
+        int discard_index;
+        int temp_size;
+        
+        //Add random card if discard pile is empty
         if(discardPile.size() == 0)
         {
             string temp = deck.deck[deck.deck.size()-1];
@@ -106,30 +101,28 @@ int main() {
             deck.deck.pop_back();
         }
         
-        for(int i=0; i<num_discard(discardPile); ++i)
+        temp_size = num_discard(discardPile);
+        for(int i=0; i<temp_size; ++i)
         {
             cout<<"Which card would you like to discard? Enter the number: "<<endl;
             cin >>discard_index;
             discard_index--;
             players[0].discard(discard_index, discardPile);
         }
-        deck.show_discard(discardPile);
-        for(int i=0; i<num_discard(discardPile); ++i)
+        
+        for(int i=1; i<4; ++i)
         {
-            players[1].auto_discard(discardPile);
+            temp_size = num_discard(discardPile);
+            
+            for(int j=0; j<temp_size; ++j)
+            {
+                players[i].auto_discard(discardPile);
+            }
+            
         }
         
-        for(int i=0; i<num_discard(discardPile); ++i)
-        {
-            players[2].auto_discard(discardPile);
-        }
-        deck.show_discard(discardPile);
-        for(int i=0; i<num_discard(discardPile); ++i)
-        {
-            players[3].auto_discard(discardPile);
-        }
-        deck.show_discard(discardPile);
         
+        //If deck runs out, add all discarded cards back in except the top card
         if(deck.deck.size() == 0)
         {
             for(int i=0; i<discardPile.size() - 2; ++i)
@@ -149,4 +142,3 @@ int main() {
     
     
 }
-
